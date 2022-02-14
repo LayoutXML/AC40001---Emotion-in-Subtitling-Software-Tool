@@ -1,5 +1,6 @@
 <div class="container">
-  <video>
-    <source [src]="getVideoSource()" type="video/mp4">
+  <video *ngIf="videoSource" (click)="playPauseVideo()" #video>
+    <source [src]="videoSource" type="video/mp4">
   </video>
+  <h2>{{title}}</h2>
 </div>

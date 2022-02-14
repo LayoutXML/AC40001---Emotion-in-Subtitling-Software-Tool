@@ -7,10 +7,9 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./video-page.component.css']
 })
 export class VideoPageComponent implements OnInit {
-  id: number;
+  id: string;
 
   constructor(private activatedRoute: ActivatedRoute) {
-    console.log(1);
   }
 
   ngOnInit(): void {
