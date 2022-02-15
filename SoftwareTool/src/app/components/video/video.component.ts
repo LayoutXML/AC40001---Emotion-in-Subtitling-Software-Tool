@@ -8,6 +8,8 @@ import {HttpService} from "../../services/http.service";
   styleUrls: ['./video.component.css']
 })
 export class VideoComponent implements OnInit {
+  faPause = faPause;
+  faPlay = faPlay;
 
   @Input()
   id: string;
@@ -15,6 +17,7 @@ export class VideoComponent implements OnInit {
   videoSource: string;
   title: string;
   playButtonVisible = true;
+  playing = false;
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -23,9 +26,41 @@ export class VideoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.fetchMetadata();
+  }
+
+  fetchMetadata() {
     this.httpService.fetchVideoMetadata(this.id).subscribe(metadata => {
       this.title = metadata[0].title;
-      this.httpService.fetchVideoSource(metadata[0].filename).subscribe(source => this.videoSource = source);
+      this.fetchVideo(metadata[0].filename);
+    });
+  }
+
+  fetchVideo(filename) {
+    this.httpService.fetchVideoSource(filename).subscribe(source => {
+      this.videoSource = source;
+      this.initialiseButton();
+    });
+  }
+
+  initialiseButton() {
+    setTimeout(() => {
+      this.videoPlayer.nativeElement.addEventListener('play', e => {
+        this.playing = true;
+        setTimeout(() => {
+          if (this.playing) {
+            this.playButtonVisible = false;
+          }
+        }, 1000);
+      });
+      this.videoPlayer.nativeElement.addEventListener('pause', e => {
+        this.playButtonVisible = true;
+        this.playing = false;
+      });
+      this.videoPlayer.nativeElement.addEventListener('ended', e => {
+        this.playButtonVisible = true;
+        this.playing = false;
+      });
     });
   }
 
@@ -33,20 +68,8 @@ export class VideoComponent implements OnInit {
     this.playButtonVisible = true;
     if (this.videoPlayer.nativeElement.paused) {
       this.videoPlayer.nativeElement.play();
-      setTimeout(() => this.playButtonVisible = false, 1000);
     } else {
       this.videoPlayer.nativeElement.pause();
     }
-  }
-
-  getPlayPauseButtonIcon() {
-    if (this.videoPlayer && this.videoPlayer.nativeElement) {
-      if (this.videoPlayer.nativeElement.paused) {
-        this.playButtonVisible = true;
-        return faPlay;
-      }
-      return faPause;
-    }
-    return faPlay;
   }
 }
