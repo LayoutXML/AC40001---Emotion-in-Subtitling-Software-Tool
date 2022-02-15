@@ -7,6 +7,7 @@ import {AppRoutingModule} from "./app-routing-module";
 import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {getFirestore, provideFirestore} from '@angular/fire/firestore';
 import {getStorage, provideStorage} from "@angular/fire/storage";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [
@@ -24,9 +25,11 @@ import {getStorage, provideStorage} from "@angular/fire/storage";
       projectId: "emotion-in-subtitling",
       storageBucket: "emotion-in-subtitling.appspot.com",
       messagingSenderId: "403249131028",
-      appId: "1:403249131028:web:c15a6149273d122a350101"})),
+      appId: "1:403249131028:web:c15a6149273d122a350101"
+    })),
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage())
+    provideStorage(() => getStorage()),
+    FontAwesomeModule
   ],
   providers: [
   ],

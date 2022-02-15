@@ -1,4 +1,5 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {faPause, faPlay} from '@fortawesome/free-solid-svg-icons';
 import {HttpService} from "../../services/http.service";
 
 @Component({
@@ -13,6 +14,7 @@ export class VideoComponent implements OnInit {
 
   videoSource: string;
   title: string;
+  playButtonVisible = true;
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -28,10 +30,23 @@ export class VideoComponent implements OnInit {
   }
 
   playPauseVideo() {
+    this.playButtonVisible = true;
     if (this.videoPlayer.nativeElement.paused) {
       this.videoPlayer.nativeElement.play();
+      setTimeout(() => this.playButtonVisible = false, 1000);
     } else {
       this.videoPlayer.nativeElement.pause();
     }
+  }
+
+  getPlayPauseButtonIcon() {
+    if (this.videoPlayer && this.videoPlayer.nativeElement) {
+      if (this.videoPlayer.nativeElement.paused) {
+        this.playButtonVisible = true;
+        return faPlay;
+      }
+      return faPause;
+    }
+    return faPlay;
   }
 }
