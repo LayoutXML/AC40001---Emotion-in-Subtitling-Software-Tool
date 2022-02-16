@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
+import {DisplayOption} from "../../objects/display-option";
 
 @Component({
   selector: 'app-video-page',
@@ -7,7 +8,10 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./video-page.component.css']
 })
 export class VideoPageComponent implements OnInit {
+  ToggleOption = DisplayOption;
+
   id: string;
+  displayOption = DisplayOption.AUDIBLE;
 
   constructor(private activatedRoute: ActivatedRoute) {
   }

@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {faCompress, faExpand, faPause, faPlay} from '@fortawesome/free-solid-svg-icons';
 import {HttpService} from "../../services/http.service";
+import {DisplayOption} from "../../objects/display-option";
 
 @Component({
   selector: 'app-video',
@@ -16,12 +17,18 @@ export class VideoComponent implements OnInit {
   @Input()
   id: string;
 
+  @Input()
+  set displayOption(displayOption: DisplayOption) {
+    this._displayOption = displayOption;
+    this.processDisplayOption();
+  }
+
   videoSource: string;
   title: string;
   playButtonVisible = true;
-  enlargeButtonVisible = true;
   playing = false;
   enlarged = false;
+  _displayOption: DisplayOption;
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -70,9 +77,17 @@ export class VideoComponent implements OnInit {
     });
   }
 
+  processDisplayOption() {
+    if (!this.videoPlayer || !this.videoPlayer.nativeElement) {
+      return;
+    }
+    this.videoPlayer.nativeElement.muted = DisplayOption.AUDIBLE !== this.displayOption;
+  }
+
   playPauseVideo() {
     this.playButtonVisible = true;
     if (this.videoPlayer.nativeElement.paused) {
+      this.processDisplayOption();
       this.videoPlayer.nativeElement.play();
     } else {
       this.videoPlayer.nativeElement.pause();

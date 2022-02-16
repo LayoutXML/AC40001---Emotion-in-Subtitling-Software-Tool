@@ -8,6 +8,7 @@ import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {getFirestore, provideFirestore} from '@angular/fire/firestore';
 import {getStorage, provideStorage} from "@angular/fire/storage";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     })),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
-    FontAwesomeModule
+    FontAwesomeModule,
+    FormsModule
   ],
   providers: [
   ],

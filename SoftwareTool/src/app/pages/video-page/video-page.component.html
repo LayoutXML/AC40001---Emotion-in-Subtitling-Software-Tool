@@ -1,1 +1,13 @@
-<app-video [id]="id"></app-video>
+<app-video [id]="id" [displayOption]="displayOption"></app-video>
+<div class="container mt-3">
+  <h4>Display option</h4>
+  <span class="toggle-option" (click)="displayOption = ToggleOption.AUDIBLE"><input name="toggle" type="radio"
+                                                                                    [(ngModel)]="displayOption"
+                                                                                    [value]="ToggleOption.AUDIBLE"> Audible video without subtitles</span>
+  <span class="toggle-option" (click)="displayOption = ToggleOption.TRADITIONAL"><input name="toggle" type="radio"
+                                                                                        [(ngModel)]="displayOption"
+                                                                                        [value]="ToggleOption.TRADITIONAL"> Inaudible video with traditional subtitles<br></span>
+  <span class="toggle-option" (click)="displayOption = ToggleOption.EMOTIONAL"><input name="toggle" type="radio"
+                                                                                      [(ngModel)]="displayOption"
+                                                                                      [value]="ToggleOption.EMOTIONAL"> Inaudible video with emotional subtitles<br></span>
+</div>
