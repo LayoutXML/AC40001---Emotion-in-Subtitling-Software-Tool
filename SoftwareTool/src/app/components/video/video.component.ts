@@ -1,5 +1,5 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {faPause, faPlay} from '@fortawesome/free-solid-svg-icons';
+import {faCompress, faExpand, faPause, faPlay} from '@fortawesome/free-solid-svg-icons';
 import {HttpService} from "../../services/http.service";
 
 @Component({
@@ -10,6 +10,8 @@ import {HttpService} from "../../services/http.service";
 export class VideoComponent implements OnInit {
   faPause = faPause;
   faPlay = faPlay;
+  faExpand = faExpand;
+  faCompress = faCompress;
 
   @Input()
   id: string;
@@ -17,7 +19,9 @@ export class VideoComponent implements OnInit {
   videoSource: string;
   title: string;
   playButtonVisible = true;
+  enlargeButtonVisible = true;
   playing = false;
+  enlarged = false;
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -56,10 +60,12 @@ export class VideoComponent implements OnInit {
       this.videoPlayer.nativeElement.addEventListener('pause', e => {
         this.playButtonVisible = true;
         this.playing = false;
+        this.enlarged = false;
       });
       this.videoPlayer.nativeElement.addEventListener('ended', e => {
         this.playButtonVisible = true;
         this.playing = false;
+        this.enlarged = false;
       });
     });
   }
@@ -71,5 +77,9 @@ export class VideoComponent implements OnInit {
     } else {
       this.videoPlayer.nativeElement.pause();
     }
+  }
+
+  expandShrinkVideo() {
+    this.enlarged = !this.enlarged;
   }
 }

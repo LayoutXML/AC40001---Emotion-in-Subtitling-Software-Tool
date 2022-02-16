@@ -1,6 +1,8 @@
-<div class="container">
-  <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="playing ? faPause : faPlay" class="pr-3"
-           (click)="playPauseVideo()"></fa-icon>
+<div class="container" [class.enlarged]="enlarged">
+  <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="playing ? faPause : faPlay" (click)="playPauseVideo()"
+           id="playButton"></fa-icon>
+  <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="enlarged ? faCompress : faExpand"
+           (click)="expandShrinkVideo()" id="expandButton"></fa-icon>
   <video *ngIf="videoSource" (click)="playPauseVideo()" #video>
     <source [src]="videoSource" type="video/mp4">
   </video>
