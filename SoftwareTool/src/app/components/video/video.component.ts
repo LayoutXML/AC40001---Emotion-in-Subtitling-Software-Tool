@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {faCompress, faExpand, faPause, faPlay} from '@fortawesome/free-solid-svg-icons';
 import {HttpService} from "../../services/http.service";
 import {DisplayOption} from "../../objects/display-option";
@@ -23,12 +23,18 @@ export class VideoComponent implements OnInit {
     this.processDisplayOption();
   }
 
+  @Output()
+  enlargedChange = new EventEmitter<boolean>();
+
   videoSource: string;
   title: string;
   playButtonVisible = true;
   playing = false;
   enlarged = false;
   _displayOption: DisplayOption;
+  element;
+  document;
+  ignoreFullscreenEvent = false;
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -38,6 +44,8 @@ export class VideoComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchMetadata();
+    this.document = document;
+    this.element = document.documentElement;
   }
 
   fetchMetadata() {
@@ -58,21 +66,15 @@ export class VideoComponent implements OnInit {
     setTimeout(() => {
       this.videoPlayer.nativeElement.addEventListener('play', e => {
         this.playing = true;
-        setTimeout(() => {
-          if (this.playing) {
-            this.playButtonVisible = false;
-          }
-        }, 1000);
+        this.showAndRemoveButtonsWithDelay();
       });
       this.videoPlayer.nativeElement.addEventListener('pause', e => {
         this.playButtonVisible = true;
         this.playing = false;
-        this.enlarged = false;
       });
       this.videoPlayer.nativeElement.addEventListener('ended', e => {
         this.playButtonVisible = true;
         this.playing = false;
-        this.enlarged = false;
       });
     });
   }
@@ -81,7 +83,7 @@ export class VideoComponent implements OnInit {
     if (!this.videoPlayer || !this.videoPlayer.nativeElement) {
       return;
     }
-    this.videoPlayer.nativeElement.muted = DisplayOption.AUDIBLE !== this.displayOption;
+    this.videoPlayer.nativeElement.muted = DisplayOption.AUDIBLE !== this._displayOption;
   }
 
   playPauseVideo() {
@@ -95,6 +97,78 @@ export class VideoComponent implements OnInit {
   }
 
   expandShrinkVideo() {
-    this.enlarged = !this.enlarged;
+    if (this.enlarged) {
+      this.shrinkVideo();
+    } else {
+      this.expandVideo();
+    }
+  }
+
+  expandVideo() {
+    if (this.enlarged) {
+      return;
+    }
+
+    this.enlarged = true;
+    this.enlargedChange.next(this.enlarged);
+    this.ignoreFullscreenEvent = true;
+
+    // https://stackoverflow.com/questions/51998594/how-to-make-google-chrome-go-full-screen-in-angular-4-application
+    if (this.element.requestFullscreen) {
+      this.element.requestFullscreen();
+    } else if (this.element.mozRequestFullScreen) {
+      this.element.mozRequestFullScreen();
+    } else if (this.element.webkitRequestFullscreen) {
+      this.element.webkitRequestFullscreen();
+    } else if (this.element.msRequestFullscreen) {
+      this.element.msRequestFullscreen();
+    }
+  }
+
+  shrinkVideo() {
+    if (!this.enlarged) {
+      return;
+    }
+
+    this.enlarged = false;
+    this.enlargedChange.next(this.enlarged);
+    this.ignoreFullscreenEvent = true;
+
+    // https://stackoverflow.com/questions/51998594/how-to-make-google-chrome-go-full-screen-in-angular-4-application
+    if (this.document.exitFullscreen) {
+      this.document.exitFullscreen();
+    } else if (this.document.mozCancelFullScreen) {
+      this.document.mozCancelFullScreen();
+    } else if (this.document.webkitExitFullscreen) {
+      this.document.webkitExitFullscreen();
+    } else if (this.document.msExitFullscreen) {
+      this.document.msExitFullscreen();
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  escHandler(event) {
+    this.shrinkVideo();
+  }
+
+  @HostListener('document:fullscreenchange', [])
+  @HostListener('document:webkitfullscreenchange', [])
+  @HostListener('document:mozfullscreenchange', [])
+  @HostListener('document:MSFullscreenChange', [])
+  fullScreen() {
+    if (this.ignoreFullscreenEvent) {
+      this.ignoreFullscreenEvent = false;
+    } else {
+      this.expandShrinkVideo();
+    }
+  }
+
+  showAndRemoveButtonsWithDelay() {
+    this.playButtonVisible = true;
+    setTimeout(() => {
+      if (this.playing) {
+        this.playButtonVisible = false;
+      }
+    }, 1000);
   }
 }

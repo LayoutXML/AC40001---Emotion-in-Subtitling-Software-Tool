@@ -1,5 +1,5 @@
-<app-video [id]="id" [displayOption]="displayOption"></app-video>
-<div class="container mt-3">
+<app-video [id]="id" [displayOption]="displayOption" (enlargedChange)="enlarged = $event"></app-video>
+<div class="container mt-3" *ngIf="!enlarged">
   <h4>Display option</h4>
   <span class="toggle-option" (click)="displayOption = ToggleOption.AUDIBLE"><input name="toggle" type="radio"
                                                                                     [(ngModel)]="displayOption"

@@ -11,6 +11,7 @@ export class VideoPageComponent implements OnInit {
   ToggleOption = DisplayOption;
 
   id: string;
+  enlarged;
   displayOption = DisplayOption.AUDIBLE;
 
   constructor(private activatedRoute: ActivatedRoute) {

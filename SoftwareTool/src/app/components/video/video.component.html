@@ -1,10 +1,11 @@
-<div class="container" [class.enlarged]="enlarged">
+<div class="container" [class.enlarged]="enlarged" [class.p-0]="enlarged">
   <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="playing ? faPause : faPlay" (click)="playPauseVideo()"
            id="playButton"></fa-icon>
   <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="enlarged ? faCompress : faExpand"
            (click)="expandShrinkVideo()" id="expandButton"></fa-icon>
-  <video *ngIf="videoSource" (click)="playPauseVideo()" #video>
+  <video *ngIf="videoSource" (click)="playPauseVideo()" #video (mouseenter)="playButtonVisible = true"
+         (mouseleave)="playButtonVisible ? showAndRemoveButtonsWithDelay() : null">
     <source [src]="videoSource" type="video/mp4">
   </video>
-  <h2>{{title}}</h2>
+  <h2 *ngIf="!enlarged">{{title}}</h2>
 </div>
