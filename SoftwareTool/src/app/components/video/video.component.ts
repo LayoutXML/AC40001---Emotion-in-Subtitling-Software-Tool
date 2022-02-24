@@ -35,6 +35,9 @@ export class VideoComponent implements OnInit {
   element;
   document;
   ignoreFullscreenEvent = false;
+  subtitles: string;
+  subtitlesLine = 0;
+  previousSubtitlesLine = 0;
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -52,20 +55,30 @@ export class VideoComponent implements OnInit {
     this.httpService.fetchVideoMetadata(this.id).subscribe(metadata => {
       this.title = metadata[0].title;
       this.fetchVideo(metadata[0].filename);
+      this.fetchSubtitles(metadata[0].subtitles);
     });
   }
 
   fetchVideo(filename) {
-    this.httpService.fetchVideoSource(filename).subscribe(source => {
-      this.videoSource = source;
+    this.httpService.fetchFileURL(filename).subscribe(videoSource => {
+      this.videoSource = videoSource;
       this.initialiseButton();
     });
+  }
+
+  fetchSubtitles(filename) {
+    this.httpService.fetchFileURL(filename).subscribe(subtitleSource => {
+      this.httpService.fetchRawTextFile(subtitleSource).subscribe(subtitles => {
+        this.subtitles = subtitles;
+      })
+    })
   }
 
   initialiseButton() {
     setTimeout(() => {
       this.videoPlayer.nativeElement.addEventListener('play', e => {
         this.playing = true;
+        this.showSubtitles();
         this.showAndRemoveButtonsWithDelay();
       });
       this.videoPlayer.nativeElement.addEventListener('pause', e => {
@@ -163,6 +176,100 @@ export class VideoComponent implements OnInit {
     }
   }
 
+  async showSubtitles() {
+    if (DisplayOption.AUDIBLE === this._displayOption) {
+      return;
+    }
+
+    const startTime = new Date().getTime() - this.videoPlayer.nativeElement.currentTime * 1000;
+    const subtitleLines = this.subtitles.split('\r\n');
+
+    if (this.subtitlesLine < 0) {
+      this.subtitlesLine = 0; // Weird javascript bug
+      this.previousSubtitlesLine = 0;
+    }
+    let repeatedOnceBefore = false;
+
+    let seq = +subtitleLines[this.subtitlesLine];
+    let lineType = 0; // 0 - sequence number, 1 - timestamp, 2 - subtitle line, 3 - empty line separator
+    let leftTimestamp;
+    let rightTimestamp;
+    let currentLines = [];
+    for (let i = this.subtitlesLine; i < subtitleLines.length; i++) {
+      const subtitleLine = subtitleLines[i];
+
+      if (!this.playing) {
+        this.subtitlesLine = this.previousSubtitlesLine;
+        return;
+      }
+
+      if (lineType === 0) {
+        if (subtitleLine === seq + '') {
+          if (i != 0 && this.subtitlesLine === i) {
+            // Multiple concurrent functions are displaying the same lines
+            // Allowing one repeat after pause
+            if (repeatedOnceBefore) {
+              return;
+            }
+            repeatedOnceBefore = true;
+          }
+
+          this.previousSubtitlesLine = this.subtitlesLine;
+          this.subtitlesLine = i;
+        } else {
+          continue;
+        }
+      }
+
+      if (lineType === 1) {
+        const timestamps = subtitleLine.split(' --> ');
+        leftTimestamp = timestamps[0];
+        rightTimestamp = timestamps[1];
+      }
+
+      if (lineType === 2) {
+        if (subtitleLine.length !== 0) {
+          currentLines.push(subtitleLine);
+          continue;
+        } else {
+          lineType++;
+        }
+      }
+
+      if (lineType === 3) {
+        const currentStartTime = leftTimestamp.substring(0, 2) * 1000 * 60 * 60 + leftTimestamp.substring(3, 5) * 1000 * 60 + leftTimestamp.substring(6, 8) * 1000 + +leftTimestamp.substring(9);
+        const currentEndTime = rightTimestamp.substring(0, 2) * 1000 * 60 * 60 + rightTimestamp.substring(3, 5) * 1000 * 60 + rightTimestamp.substring(6, 8) * 1000 + +rightTimestamp.substring(9);
+        const currentTime = new Date().getTime();
+        const waitTime = currentStartTime - (currentTime - startTime);
+        const duration = currentEndTime - currentStartTime;
+
+        if (duration > 0) {
+          if (waitTime > 0) {
+            await this.delay(waitTime);
+          }
+          if (!this.playing) {
+            this.subtitlesLine = this.previousSubtitlesLine;
+            return;
+          }
+          this.showAndDestroyConcurrently(currentLines, duration);
+        }
+
+        seq++;
+        lineType = -1;
+        currentLines = [];
+      }
+
+      lineType++;
+    }
+  }
+
+  async showAndDestroyConcurrently(currentLines: string[], duration: number) {
+    // Necessary for time overlapping subtitle texts
+    console.log(currentLines); // TODO: show current subtitles
+    await this.delay(duration);
+    // TODO: destroy current subtitles
+  }
+
   showAndRemoveButtonsWithDelay() {
     this.playButtonVisible = true;
     setTimeout(() => {
@@ -170,5 +277,9 @@ export class VideoComponent implements OnInit {
         this.playButtonVisible = false;
       }
     }, 1000);
+  }
+
+  delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
   }
 }
