@@ -1,8 +1,13 @@
-<div class="container" [class.enlarged]="enlarged" [class.p-0]="enlarged">
+<div class="container" id="container" [class.enlarged]="enlarged" [class.p-0]="enlarged">
   <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="playing ? faPause : faPlay" (click)="playPauseVideo()"
            id="playButton"></fa-icon>
   <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="enlarged ? faCompress : faExpand"
            (click)="expandShrinkVideo()" id="expandButton"></fa-icon>
+  <div class="subtitles">
+    <div *ngFor="let subtitle of currentSubtitles" class="subtitle p-2" [class.subtitles-enlarged]="enlarged">
+      <div class="d-block" *ngFor="let line of subtitle.text">{{line}}</div>
+    </div>
+  </div>
   <video *ngIf="videoSource" (click)="playPauseVideo()" #video (mouseenter)="playButtonVisible = true"
          (mouseleave)="playButtonVisible ? showAndRemoveButtonsWithDelay() : null">
     <source [src]="videoSource" type="video/mp4">

@@ -2,6 +2,7 @@ import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output
 import {faCompress, faExpand, faPause, faPlay} from '@fortawesome/free-solid-svg-icons';
 import {HttpService} from "../../services/http.service";
 import {DisplayOption} from "../../objects/display-option";
+import {Subtitle} from "../../objects/subtitle";
 
 @Component({
   selector: 'app-video',
@@ -35,9 +36,10 @@ export class VideoComponent implements OnInit {
   element;
   document;
   ignoreFullscreenEvent = false;
-  subtitles: string;
+  rawSubtitles: string;
   subtitlesLine = 0;
   previousSubtitlesLine = 0;
+  currentSubtitles: Subtitle[] = [];
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -48,7 +50,7 @@ export class VideoComponent implements OnInit {
   ngOnInit(): void {
     this.fetchMetadata();
     this.document = document;
-    this.element = document.documentElement;
+    this.element = document.getElementById('container');
   }
 
   fetchMetadata() {
@@ -69,7 +71,7 @@ export class VideoComponent implements OnInit {
   fetchSubtitles(filename) {
     this.httpService.fetchFileURL(filename).subscribe(subtitleSource => {
       this.httpService.fetchRawTextFile(subtitleSource).subscribe(subtitles => {
-        this.subtitles = subtitles;
+        this.rawSubtitles = subtitles;
       })
     })
   }
@@ -97,6 +99,7 @@ export class VideoComponent implements OnInit {
       return;
     }
     this.videoPlayer.nativeElement.muted = DisplayOption.AUDIBLE !== this._displayOption;
+    this.showSubtitles();
   }
 
   playPauseVideo() {
@@ -164,6 +167,11 @@ export class VideoComponent implements OnInit {
     this.shrinkVideo();
   }
 
+  @HostListener('document:keydown.space', ['$event'])
+  spaceHandler(event) {
+    this.playPauseVideo();
+  }
+
   @HostListener('document:fullscreenchange', [])
   @HostListener('document:webkitfullscreenchange', [])
   @HostListener('document:mozfullscreenchange', [])
@@ -178,11 +186,12 @@ export class VideoComponent implements OnInit {
 
   async showSubtitles() {
     if (DisplayOption.AUDIBLE === this._displayOption) {
+      this.currentSubtitles = [];
       return;
     }
 
     const startTime = new Date().getTime() - this.videoPlayer.nativeElement.currentTime * 1000;
-    const subtitleLines = this.subtitles.split('\r\n');
+    const subtitleLines = this.rawSubtitles.split('\r\n');
 
     if (this.subtitlesLine < 0) {
       this.subtitlesLine = 0; // Weird javascript bug
@@ -198,7 +207,8 @@ export class VideoComponent implements OnInit {
     for (let i = this.subtitlesLine; i < subtitleLines.length; i++) {
       const subtitleLine = subtitleLines[i];
 
-      if (!this.playing) {
+      // @ts-ignore
+      if (!this.playing || DisplayOption.AUDIBLE === this._displayOption) {
         this.subtitlesLine = this.previousSubtitlesLine;
         return;
       }
@@ -247,7 +257,8 @@ export class VideoComponent implements OnInit {
           if (waitTime > 0) {
             await this.delay(waitTime);
           }
-          if (!this.playing) {
+          // @ts-ignore
+          if (!this.playing || DisplayOption.AUDIBLE === this._displayOption) {
             this.subtitlesLine = this.previousSubtitlesLine;
             return;
           }
@@ -265,9 +276,11 @@ export class VideoComponent implements OnInit {
 
   async showAndDestroyConcurrently(currentLines: string[], duration: number) {
     // Necessary for time overlapping subtitle texts
-    console.log(currentLines); // TODO: show current subtitles
+    const id = new Date().getTime();
+    const subtitles = new Subtitle(id, currentLines);
+    this.currentSubtitles.push(subtitles);
     await this.delay(duration);
-    // TODO: destroy current subtitles
+    this.currentSubtitles = this.currentSubtitles.filter(subtitle => id != subtitle.id);
   }
 
   showAndRemoveButtonsWithDelay() {
