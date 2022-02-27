@@ -10,12 +10,16 @@ import {getStorage, provideStorage} from "@angular/fire/storage";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
+import { VideoListComponent } from './pages/video-list/video-list.component';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     VideoComponent,
-    VideoPageComponent
+    VideoPageComponent,
+    VideoListComponent,
+    NavBarComponent
   ],
   imports: [
     BrowserModule,

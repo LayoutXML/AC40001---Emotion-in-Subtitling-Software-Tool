@@ -1,12 +1,12 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AppComponent} from "./app.component";
 import {VideoPageComponent} from "./pages/video-page/video-page.component";
+import {VideoListComponent} from "./pages/video-list/video-list.component";
 
 const routes: Routes = [
-  {path: '', runGuardsAndResolvers: 'always', component: AppComponent},
+  {path: '', runGuardsAndResolvers: 'always', component: VideoListComponent},
   {path: 'video/:id', runGuardsAndResolvers: 'always', component: VideoPageComponent},
-  {path: '**', component: AppComponent}
+  {path: '**', component: VideoListComponent}
 ];
 
 @NgModule({

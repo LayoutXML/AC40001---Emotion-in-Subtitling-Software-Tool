@@ -26,6 +26,6 @@ export class HttpService {
   }
 
   fetchAllVideosList() {
-    return collectionData(query(collection(this.firestore, 'videos')));
+    return collectionData(query(collection(this.firestore, 'videos')), {idField: 'id'});
   }
 }

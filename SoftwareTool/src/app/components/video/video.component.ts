@@ -110,6 +110,7 @@ export class VideoComponent implements OnInit {
     } else {
       this.videoPlayer.nativeElement.pause();
     }
+    this.currentSubtitles = [];
   }
 
   expandShrinkVideo() {
@@ -160,6 +161,11 @@ export class VideoComponent implements OnInit {
     } else if (this.document.msExitFullscreen) {
       this.document.msExitFullscreen();
     }
+  }
+
+  @HostListener('document:keydown.f', ['$event'])
+  fHandler(event) {
+    this.expandShrinkVideo();
   }
 
   @HostListener('document:keydown.escape', ['$event'])
@@ -279,7 +285,7 @@ export class VideoComponent implements OnInit {
     const id = new Date().getTime();
     const subtitles = new Subtitle(id, currentLines);
     this.currentSubtitles.push(subtitles);
-    await this.delay(duration);
+    await this.delay(duration - 100); // Javascript bug, async functions are not perfect to each ms
     this.currentSubtitles = this.currentSubtitles.filter(subtitle => id != subtitle.id);
   }
 

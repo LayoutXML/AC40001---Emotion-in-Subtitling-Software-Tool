@@ -9,7 +9,7 @@
     </div>
   </div>
   <video *ngIf="videoSource" (click)="playPauseVideo()" #video (mouseenter)="playButtonVisible = true"
-         (mouseleave)="playButtonVisible ? showAndRemoveButtonsWithDelay() : null">
+         (mouseleave)="playButtonVisible ? showAndRemoveButtonsWithDelay() : null" class="mt-3">
     <source [src]="videoSource" type="video/mp4">
   </video>
   <h2 *ngIf="!enlarged">{{title}}</h2>

@@ -1,0 +1,36 @@
+.card-img-top {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 0.625rem;
+}
+
+a > .card-img-top {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.card {
+  width: 100%;
+  min-width: 200px;
+  border-radius: 0.625rem;
+}
+
+@media screen and (min-width: 768px) {
+  .card-deck .card {
+    max-width: calc(33% - 30px);
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .card-deck .card {
+    max-width: calc(25% - 30px);
+  }
+}
+
+.card-body {
+  background-color: #ffffff;
+  border-radius: 0.625rem;
+}
