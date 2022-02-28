@@ -1,0 +1,6 @@
+export enum Sizes {
+  REGULAR,
+  LARGE_UPPERCASE,
+  SMALL,
+  SMALL_LOWERCASE
+}
