@@ -4,8 +4,13 @@
   <fa-icon *ngIf="videoSource && playButtonVisible" [icon]="enlarged ? faCompress : faExpand"
            (click)="expandShrinkVideo()" id="expandButton"></fa-icon>
   <div class="subtitles">
-    <div *ngFor="let subtitle of currentSubtitles" class="subtitle p-2" [class.subtitles-enlarged]="enlarged">
-      <div class="d-block" *ngFor="let line of subtitle.text">{{line}}</div>
+    <div *ngFor="let block of currentSubtitles" [class.subtitles-enlarged]="enlarged">
+      <div class="d-block subtitle p-2"
+           [style.color]="line.color"
+           [style.background-color]="line.color === '#000000' ? 'rgba(255, 255, 255, 0.75)' : null"
+           *ngFor="let line of block.text">
+        {{line.text}}
+      </div>
     </div>
   </div>
   <video *ngIf="videoSource" (click)="playPauseVideo()" #video (mouseenter)="playButtonVisible = true"

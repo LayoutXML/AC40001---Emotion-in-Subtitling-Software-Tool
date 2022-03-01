@@ -2,7 +2,9 @@ import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output
 import {faCompress, faExpand, faPause, faPlay} from '@fortawesome/free-solid-svg-icons';
 import {HttpService} from "../../services/http.service";
 import {DisplayOption} from "../../objects/display-option";
-import {Subtitle} from "../../objects/subtitle";
+import {SubtitleBlock} from "../../objects/subtitle-block";
+import {SubtitleLine} from "../../objects/subtitle-line";
+import {SubtitleEmotionUtilsService} from "../../services/subtitle-emotion-utils.service";
 
 @Component({
   selector: 'app-video',
@@ -14,6 +16,7 @@ export class VideoComponent implements OnInit {
   faPlay = faPlay;
   faExpand = faExpand;
   faCompress = faCompress;
+  emotionUtil = new SubtitleEmotionUtilsService();
 
   @Input()
   id: string;
@@ -39,7 +42,7 @@ export class VideoComponent implements OnInit {
   rawSubtitles: string;
   subtitlesLine = 0;
   previousSubtitlesLine = 0;
-  currentSubtitles: Subtitle[] = [];
+  currentSubtitles: SubtitleBlock[] = [];
 
   @ViewChild('video')
   videoPlayer: ElementRef;
@@ -283,10 +286,36 @@ export class VideoComponent implements OnInit {
   async showAndDestroyConcurrently(currentLines: string[], duration: number) {
     // Necessary for time overlapping subtitle texts
     const id = new Date().getTime();
-    const subtitles = new Subtitle(id, currentLines);
+    const subtitles = new SubtitleBlock(id, this.parseSubtitleLines(currentLines));
     this.currentSubtitles.push(subtitles);
     await this.delay(duration - 100); // Javascript bug, async functions are not perfect to each ms
     this.currentSubtitles = this.currentSubtitles.filter(subtitle => id != subtitle.id);
+  }
+
+  parseSubtitleLines(subtitleLines: string[]): SubtitleLine[] {
+    const result = [];
+
+    subtitleLines.forEach(line => {
+      if (!line.startsWith("<e")) {
+        result.push(new SubtitleLine(line));
+        return;
+      }
+
+      const text = line.substring(7);
+      const pleasantness = +line.charAt(3);
+      const arousal = +line.charAt(5);
+      if (DisplayOption.TRADITIONAL === this._displayOption) {
+        result.push(new SubtitleLine(text));
+      } else if (DisplayOption.EMOTIONAL === this._displayOption) {
+        result.push(new SubtitleLine(text,
+          this.emotionUtil.getColorByValues(pleasantness, arousal),
+          this.emotionUtil.getSizeByValues(pleasantness, arousal),
+          this.emotionUtil.getEmphasisByValues(pleasantness, arousal),
+          this.emotionUtil.getAnimationsByValues(pleasantness, arousal)))
+      }
+    });
+
+    return result;
   }
 
   showAndRemoveButtonsWithDelay() {
