@@ -5,6 +5,7 @@ import {DisplayOption} from "../../objects/display-option";
 import {SubtitleBlock} from "../../objects/subtitle-block";
 import {SubtitleLine} from "../../objects/subtitle-line";
 import {SubtitleEmotionUtilsService} from "../../services/subtitle-emotion-utils.service";
+import {Sizes} from "../../objects/sizes";
 
 @Component({
   selector: 'app-video',
@@ -216,8 +217,7 @@ export class VideoComponent implements OnInit {
     for (let i = this.subtitlesLine; i < subtitleLines.length; i++) {
       const subtitleLine = subtitleLines[i];
 
-      // @ts-ignore
-      if (!this.playing || DisplayOption.AUDIBLE === this._displayOption) {
+      if (!this.playing || (DisplayOption.AUDIBLE as DisplayOption) === this._displayOption) {
         this.subtitlesLine = this.previousSubtitlesLine;
         return;
       }
@@ -266,8 +266,7 @@ export class VideoComponent implements OnInit {
           if (waitTime > 0) {
             await this.delay(waitTime);
           }
-          // @ts-ignore
-          if (!this.playing || DisplayOption.AUDIBLE === this._displayOption) {
+          if (!this.playing || (DisplayOption.AUDIBLE as DisplayOption) === this._displayOption) {
             this.subtitlesLine = this.previousSubtitlesLine;
             return;
           }
@@ -329,5 +328,41 @@ export class VideoComponent implements OnInit {
 
   delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  getTextColor(line: SubtitleLine) {
+    if (line.color) {
+      return line.color;
+    }
+    return '#ffffff';
+  }
+
+  getBackgroundColor(line: SubtitleLine) {
+    if (line.color === '#000000') {
+      return 'rgba(255, 255, 255, 0.75)';
+    }
+    return 'rgba(0, 0, 0, 0.75)';
+  }
+
+  getTextSize(line: SubtitleLine) {
+    let size = 18;
+
+    if (line.size && (Sizes.REGULAR as Sizes) !== line.size) {
+      if (Sizes.LARGE_UPPERCASE === line.size) {
+        size = 24;
+        line.text = line.text.toUpperCase();
+      } else if (Sizes.SMALL === line.size) {
+        size = 12;
+      } else if (Sizes.SMALL_LOWERCASE === line.size) {
+        size = 12;
+        line.text = line.text.toLowerCase();
+      }
+    }
+
+    if (this.enlarged) {
+      size *= 2;
+    }
+
+    return size + 'pt';
   }
 }
