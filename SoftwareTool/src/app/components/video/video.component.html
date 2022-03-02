@@ -6,9 +6,13 @@
   <div class="subtitles">
     <div *ngFor="let block of currentSubtitles">
       <div class="d-block subtitle p-2"
-           [style.color]="getTextColor(line)"
+           [style.color]="getColor(line)"
            [style.background-color]="getBackgroundColor(line)"
-           [style.font-size]="getTextSize(line)"
+           [style.font-size]="getFontSize(line)"
+           [style.font-weight]="getFontWeight(line)"
+           [style.font-style]="getFontStyle(line)"
+           [style.text-decoration]="getTextDecoration(line)"
+           [style.text-shadow]="getTextShadow(line)"
            *ngFor="let line of block.text">
         {{line.text}}
       </div>

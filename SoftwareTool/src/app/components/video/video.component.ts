@@ -6,6 +6,7 @@ import {SubtitleBlock} from "../../objects/subtitle-block";
 import {SubtitleLine} from "../../objects/subtitle-line";
 import {SubtitleEmotionUtilsService} from "../../services/subtitle-emotion-utils.service";
 import {Sizes} from "../../objects/sizes";
+import {Emphasis} from "../../objects/emphasis";
 
 @Component({
   selector: 'app-video',
@@ -195,7 +196,7 @@ export class VideoComponent implements OnInit {
   }
 
   async showSubtitles() {
-    if (DisplayOption.AUDIBLE === this._displayOption) {
+    if ((DisplayOption.AUDIBLE as DisplayOption) === this._displayOption) {
       this.currentSubtitles = [];
       return;
     }
@@ -303,9 +304,9 @@ export class VideoComponent implements OnInit {
       const text = line.substring(7);
       const pleasantness = +line.charAt(3);
       const arousal = +line.charAt(5);
-      if (DisplayOption.TRADITIONAL === this._displayOption) {
+      if ((DisplayOption.TRADITIONAL as DisplayOption) === this._displayOption) {
         result.push(new SubtitleLine(text));
-      } else if (DisplayOption.EMOTIONAL === this._displayOption) {
+      } else if ((DisplayOption.EMOTIONAL as DisplayOption) === this._displayOption) {
         result.push(new SubtitleLine(text,
           this.emotionUtil.getColorByValues(pleasantness, arousal),
           this.emotionUtil.getSizeByValues(pleasantness, arousal),
@@ -330,7 +331,10 @@ export class VideoComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, time));
   }
 
-  getTextColor(line: SubtitleLine) {
+  getColor(line: SubtitleLine) {
+    if ((Emphasis.BLUR as Emphasis) === line.emphasis) {
+      return 'transparent';
+    }
     if (line.color) {
       return line.color;
     }
@@ -344,16 +348,16 @@ export class VideoComponent implements OnInit {
     return 'rgba(0, 0, 0, 0.75)';
   }
 
-  getTextSize(line: SubtitleLine) {
+  getFontSize(line: SubtitleLine) {
     let size = 18;
 
     if (line.size && (Sizes.REGULAR as Sizes) !== line.size) {
-      if (Sizes.LARGE_UPPERCASE === line.size) {
+      if ((Sizes.LARGE_UPPERCASE as Sizes) === line.size) {
         size = 24;
         line.text = line.text.toUpperCase();
-      } else if (Sizes.SMALL === line.size) {
+      } else if ((Sizes.SMALL as Sizes) === line.size) {
         size = 12;
-      } else if (Sizes.SMALL_LOWERCASE === line.size) {
+      } else if ((Sizes.SMALL_LOWERCASE as Sizes) === line.size) {
         size = 12;
         line.text = line.text.toLowerCase();
       }
@@ -364,5 +368,45 @@ export class VideoComponent implements OnInit {
     }
 
     return size + 'pt';
+  }
+
+  getFontWeight(line: SubtitleLine) {
+    if (line.emphasis) {
+      if ((Emphasis.LIGHT as Emphasis) === line.emphasis) {
+        return '300';
+      }
+      if ((Emphasis.BOLD as Emphasis) === line.emphasis) {
+        return '700';
+      }
+    }
+    return '400';
+  }
+
+  getFontStyle(line: SubtitleLine) {
+    if (line.emphasis) {
+      if ((Emphasis.ITALICS as Emphasis) === line.emphasis) {
+        return 'italic';
+      }
+    }
+    return 'normal';
+  }
+
+  getTextDecoration(line: SubtitleLine) {
+    if (line.emphasis) {
+      if ((Emphasis.UNDERLINE as Emphasis) === line.emphasis) {
+        return 'underline';
+      }
+    }
+    return 'none';
+  }
+
+  getTextShadow(line: SubtitleLine) {
+    if (line.emphasis) {
+      if ((Emphasis.BLUR as Emphasis) === line.emphasis) {
+        const color = line.color ? line.color : '#ffffff';
+        return '0 0 5px ' + color;
+      }
+    }
+    return 'none';
   }
 }
