@@ -262,7 +262,10 @@ export class VideoComponent implements OnInit {
         const currentEndTime = rightTimestamp.substring(0, 2) * 1000 * 60 * 60 + rightTimestamp.substring(3, 5) * 1000 * 60 + rightTimestamp.substring(6, 8) * 1000 + +rightTimestamp.substring(9);
         const currentTime = new Date().getTime();
         const waitTime = currentStartTime - (currentTime - startTime);
-        const duration = currentEndTime - currentStartTime;
+        let duration = currentEndTime - currentStartTime;
+        if (waitTime < 0) {
+          duration += waitTime;
+        }
 
         if (duration > 0) {
           if (waitTime > 0) {
@@ -272,7 +275,7 @@ export class VideoComponent implements OnInit {
             this.subtitlesLine = this.previousSubtitlesLine;
             return;
           }
-          this.showAndDestroyConcurrently(currentLines, duration);
+          this.showAndDestroyConcurrently(currentLines, duration, currentStartTime, currentEndTime);
         }
 
         seq++;
@@ -284,10 +287,21 @@ export class VideoComponent implements OnInit {
     }
   }
 
-  async showAndDestroyConcurrently(currentLines: string[], duration: number) {
-    // Necessary for time overlapping subtitle texts
+  async showAndDestroyConcurrently(currentLines: string[], duration: number, startTime: number, endTime: number) {
+    const subtitleLines = this.parseSubtitleLines(currentLines);
+    if (this.currentSubtitles.findIndex(subtitleBlock => {
+      if (subtitleBlock.startTime !== startTime || subtitleBlock.endTime !== endTime) {
+        return false;
+      }
+      return subtitleBlock.text.map(line => line.text).join() === subtitleLines.map(line => line.text).join();
+    }) >= 0) {
+      // Prevent adding duplicate after resuming video
+      return;
+    }
+
+    // Necessary to distinguish subtitle object when having time overlapping subtitle texts
     const id = new Date().getTime();
-    const subtitles = new SubtitleBlock(id, this.parseSubtitleLines(currentLines));
+    const subtitles = new SubtitleBlock(id, subtitleLines, startTime, endTime);
     this.currentSubtitles.push(subtitles);
     await this.delay(duration - 100); // Javascript bug, async functions are not perfect to each ms
     this.currentSubtitles = this.currentSubtitles.filter(subtitle => id != subtitle.id);
