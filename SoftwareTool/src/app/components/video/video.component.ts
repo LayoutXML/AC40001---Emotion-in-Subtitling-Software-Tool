@@ -350,16 +350,16 @@ export class VideoComponent implements OnInit {
   }
 
   getFontSize(line: SubtitleLine) {
-    let size = 18;
+    let size = 1.5;
 
     if (line.size && (Sizes.REGULAR as Sizes) !== line.size) {
       if ((Sizes.LARGE_UPPERCASE as Sizes) === line.size) {
-        size = 24;
+        size *= 1.25;
         line.text = line.text.toUpperCase();
       } else if ((Sizes.SMALL as Sizes) === line.size) {
-        size = 12;
+        size *= 0.75;
       } else if ((Sizes.SMALL_LOWERCASE as Sizes) === line.size) {
-        size = 12;
+        size *= 0.75;
         line.text = line.text.toLowerCase();
       }
     }
@@ -369,10 +369,10 @@ export class VideoComponent implements OnInit {
     }
 
     if (line.animation && (Animations.FLASHING as Animations) === line.animation) {
-      size *= 1.5;
+      size *= 1.2;
     }
 
-    return size + 'pt';
+    return size + 'vw';
   }
 
   getFontWeight(line: SubtitleLine) {
