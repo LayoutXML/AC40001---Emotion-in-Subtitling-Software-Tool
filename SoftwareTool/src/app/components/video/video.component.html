@@ -21,7 +21,7 @@
   </div>
   <video *ngIf="videoSource" (click)="playPauseVideo()" #video (mouseenter)="playButtonVisible = true"
          (mouseleave)="playButtonVisible ? showAndRemoveButtonsWithDelay() : null"
-         [class]="enlarged ? 'video-enlarged' : 'mt-3'">
+         [class]="enlarged ? 'video-enlarged' : 'mt-3'" playsinline>
     <source [src]="videoSource" type="video/mp4">
   </video>
 </div>
