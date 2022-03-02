@@ -7,6 +7,7 @@ import {SubtitleLine} from "../../objects/subtitle-line";
 import {SubtitleEmotionUtilsService} from "../../services/subtitle-emotion-utils.service";
 import {Sizes} from "../../objects/sizes";
 import {Emphasis} from "../../objects/emphasis";
+import {Animations} from "../../objects/animations";
 
 @Component({
   selector: 'app-video',
@@ -367,6 +368,10 @@ export class VideoComponent implements OnInit {
       size *= 2;
     }
 
+    if (line.animation && (Animations.FLASHING as Animations) === line.animation) {
+      size *= 1.5;
+    }
+
     return size + 'pt';
   }
 
@@ -405,6 +410,18 @@ export class VideoComponent implements OnInit {
       if ((Emphasis.BLUR as Emphasis) === line.emphasis) {
         const color = line.color ? line.color : '#ffffff';
         return '0 0 5px ' + color;
+      }
+    }
+    return 'none';
+  }
+
+  getAnimation(line: SubtitleLine) {
+    if (line.animation) {
+      if ((Animations.FLASHING as Animations) === line.animation) {
+        return 'flashing 2s linear infinite';
+      }
+      if ((Animations.PULSING as Animations) === line.animation) {
+        return 'pulsing 2s linear infinite';
       }
     }
     return 'none';

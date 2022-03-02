@@ -54,3 +54,18 @@ video {
   max-height: 90%;
   overflow: hidden;
 }
+
+@keyframes flashing {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulsing {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.5);
+  }
+}

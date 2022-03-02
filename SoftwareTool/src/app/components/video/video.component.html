@@ -13,6 +13,7 @@
            [style.font-style]="getFontStyle(line)"
            [style.text-decoration]="getTextDecoration(line)"
            [style.text-shadow]="getTextShadow(line)"
+           [style.animation]="getAnimation(line)"
            *ngFor="let line of block.text">
         {{line.text}}
       </div>
