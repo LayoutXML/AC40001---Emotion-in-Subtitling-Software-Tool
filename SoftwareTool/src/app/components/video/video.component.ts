@@ -432,7 +432,7 @@ export class VideoComponent implements OnInit {
   getAnimation(line: SubtitleLine) {
     if (line.animation) {
       if ((Animations.FLASHING as Animations) === line.animation) {
-        return 'flashing 2s linear infinite';
+        return 'flashing 3s linear infinite';
       }
       if ((Animations.PULSING as Animations) === line.animation) {
         return 'pulsing 2s linear infinite';
