@@ -36,4 +36,11 @@ export class CodeComponent implements OnInit {
     })
   }
 
+  onRandomClick() {
+    this.httpService.fetchCodes().subscribe(value => {
+      const randomElement = Math.floor(Math.random() * value.length);
+      this.router.navigate(['/video/' + value[randomElement].a], {queryParams: {code: value[randomElement].id, seq: 'a'}});
+    })
+  }
+
 }

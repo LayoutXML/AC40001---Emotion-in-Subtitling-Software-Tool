@@ -54,7 +54,11 @@ export class ThankYouComponent implements OnInit {
   }
 
   onNext() {
-    this.router.navigate(['/video/' + this.nextVideoId], {queryParams: {code: this.code, seq: this.seq}});
+    if (this.seq == 'd') {
+      this.router.navigate(['/thankyou/'], {queryParams: {code: this.code, seq: 'e'}});
+    } else {
+      this.router.navigate(['/video/' + this.nextVideoId], {queryParams: {code: this.code, seq: this.seq}});
+    }
   }
 
 }

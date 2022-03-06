@@ -1,11 +1,24 @@
 <div class="container mt-5">
   <h1>Emotion in Subtitling</h1>
-  <p class="mt-3">Enter the study code given to you:</p>
+  <p>You are invited to take part in a research project. Before you begin it is important that you agree to the
+    Participant Information Sheet and Informed Consent form below.</p>
+  <p>You will be shown 3 video clips with different display options. After each one you will be asked to answer some
+    questions about them. Each video is about 3 minutes long. Please have the questionnaire open alongside this
+    page.</p>
+  <a href="#">The questionnaire and consent form can be found here.</a>
+
+  <p class="mt-5">If you were given a code, please enter it below. The codes are not unique and cannot be linked to you.
+    They are
+    used as a way to distribute variations more evenly.</p>
   <div class="input-group input-group-lg mb-3">
-    <input type="text" [(ngModel)]="code" (keyup.enter)="onCodeSubmit()" placeholder="Code" id="code" name="code" class="form-control">
+    <input type="text" [(ngModel)]="code" (keyup.enter)="onCodeSubmit()" placeholder="Code" id="code" name="code"
+           class="form-control">
     <div class="input-group-append">
       <button (click)="onCodeSubmit()" class="btn btn-outline-secondary" type="button">Submit</button>
     </div>
   </div>
   <p *ngIf="invalidCode" class="error">Code is invalid</p>
+
+  <button (click)="onRandomClick()" class="btn btn-lg btn-outline-secondary mb-3" type="button">I don't have a code / give me any
+  </button>
 </div>

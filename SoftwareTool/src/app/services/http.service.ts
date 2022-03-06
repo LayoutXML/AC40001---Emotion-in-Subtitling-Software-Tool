@@ -32,4 +32,8 @@ export class HttpService {
   fetchCode(code: string) {
     return collectionData(query(collection(this.firestore, 'codes'), where('__name__', '==', code)));
   }
+
+  fetchCodes() {
+    return collectionData(query(collection(this.firestore, 'codes')), {idField: 'id'});
+  }
 }

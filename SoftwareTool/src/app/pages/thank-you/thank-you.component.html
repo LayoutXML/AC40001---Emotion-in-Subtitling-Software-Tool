@@ -1,6 +1,6 @@
-<div class="container mt-5">
+<div class="container mt-5" *ngIf="seq != 'e'">
   <p>Thank you for watching the video.</p>
-  <p>Your video was called "<strong>{{pastVideoTitle}}</strong>" with display option:
+  <p>You have just watched a video titled "<strong>{{pastVideoTitle}}</strong>" with the following display option:
     <strong>
       <span *ngIf="DisplayOption.AUDIBLE === pastVideoDisplayOption">"Audible video without subtitles"</span>
       <span
@@ -8,7 +8,16 @@
       <span *ngIf="DisplayOption.EMOTIONAL === pastVideoDisplayOption">"Inaudible video with emotional subtitles"</span>
     </strong>.
   </p>
-  <p><strong>Please fill out the next page of the questionnaire now.</strong></p>
-  <p *ngIf="seq == 'd'" class="mt-5">You have reached the end of the research study. Thank you for participating.</p>
-  <button (click)="onNext()" *ngIf="seq != 'd'" type="button" class="btn btn-secondary ml-auto d-block">Next</button>
+  <p [class.mb-0]="seq == 'b'"><strong>Please fill out the next page of the questionnaire now.</strong></p>
+  <div *ngIf="seq == 'b'">
+    <a href="#" class="d-block">If you haven't started the questionnaire yet, it can be found here.</a>
+  </div>
+
+  <button (click)="onNext()" *ngIf="seq != 'e'" type="button" class="btn btn-secondary ml-auto d-block">Next</button>
+</div>
+
+<div class="container mt-5" *ngIf="seq == 'e'">
+  <p>You have reached the end of the research study.</p>
+  <p><strong>Please fill out the final page of the questionnaire now.</strong></p>
+  <p>Thank you for participating.</p>
 </div>
