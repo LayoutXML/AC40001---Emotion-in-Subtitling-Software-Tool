@@ -1,5 +1,8 @@
-<app-video [id]="id" [displayOption]="displayOption" (enlargedChange)="enlarged = $event"></app-video>
-<div class="container mt-3" *ngIf="!enlarged">
+<app-nav-bar *ngIf="!enlarged && !code"></app-nav-bar>
+<div [class.mt-5]="!enlarged && !code">
+  <app-video [id]="id" [displayOption]="displayOption" (enlargedChange)="enlarged = $event"></app-video>
+</div>
+<div class="container mt-3" *ngIf="!enlarged && !code">
   <h4>Display option</h4>
   <span class="toggle-option" (click)="displayOption = ToggleOption.AUDIBLE"><input name="toggle" type="radio"
                                                                                     [(ngModel)]="displayOption"
@@ -10,4 +13,7 @@
   <span class="toggle-option" (click)="displayOption = ToggleOption.EMOTIONAL"><input name="toggle" type="radio"
                                                                                       [(ngModel)]="displayOption"
                                                                                       [value]="ToggleOption.EMOTIONAL"> Inaudible video with emotional subtitles<br></span>
+</div>
+<div class="container" *ngIf="!enlarged && code">
+  <button (click)="onNext()" type="button" class="btn btn-secondary ml-auto d-block">Next</button>
 </div>

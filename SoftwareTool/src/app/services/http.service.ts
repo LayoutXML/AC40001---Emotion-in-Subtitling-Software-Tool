@@ -28,4 +28,8 @@ export class HttpService {
   fetchAllVideosList() {
     return collectionData(query(collection(this.firestore, 'videos')), {idField: 'id'});
   }
+
+  fetchCode(code: string) {
+    return collectionData(query(collection(this.firestore, 'codes'), where('__name__', '==', code)));
+  }
 }

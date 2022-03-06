@@ -12,6 +12,8 @@ import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import { VideoListComponent } from './pages/video-list/video-list.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { CodeComponent } from './pages/code/code.component';
+import { ThankYouComponent } from './pages/thank-you/thank-you.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
     VideoComponent,
     VideoPageComponent,
     VideoListComponent,
-    NavBarComponent
+    NavBarComponent,
+    CodeComponent,
+    ThankYouComponent
   ],
   imports: [
     BrowserModule,
