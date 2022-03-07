@@ -3,7 +3,7 @@
   <app-video [id]="id" [displayOption]="displayOption" (enlargedChange)="enlarged = $event"></app-video>
 </div>
 <div class="container mt-3" *ngIf="!enlarged && !code">
-  <h4>Display option</h4>
+  <h4>Display method</h4>
   <span class="toggle-option" (click)="displayOption = ToggleOption.AUDIBLE"><input name="toggle" type="radio"
                                                                                     [(ngModel)]="displayOption"
                                                                                     [value]="ToggleOption.AUDIBLE"> Audible video without subtitles</span>
@@ -12,7 +12,7 @@
                                                                                         [value]="ToggleOption.TRADITIONAL"> Inaudible video with traditional subtitles<br></span>
   <span class="toggle-option" (click)="displayOption = ToggleOption.EMOTIONAL"><input name="toggle" type="radio"
                                                                                       [(ngModel)]="displayOption"
-                                                                                      [value]="ToggleOption.EMOTIONAL"> Inaudible video with emotional subtitles<br></span>
+                                                                                      [value]="ToggleOption.EMOTIONAL"> Inaudible video with enhanced subtitles<br></span>
 </div>
 <div class="container" *ngIf="!enlarged && code">
   <button (click)="onNext()" type="button" class="btn btn-secondary ml-auto d-block">Next</button>

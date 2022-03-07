@@ -1,11 +1,11 @@
 <div class="container mt-5" *ngIf="seq != 'e'">
   <p>Thank you for watching the video.</p>
-  <p>You have just watched a video titled "<strong>{{pastVideoTitle}}</strong>" with the following display option:
+  <p>You have just watched a video titled "<strong>{{pastVideoTitle}}</strong>" with the following display method:
     <strong>
-      <span *ngIf="DisplayOption.AUDIBLE === pastVideoDisplayOption">"Audible video without subtitles"</span>
+      <span *ngIf="DisplayOption.AUDIBLE === pastVideoDisplayOption">"A - Audible video without subtitles"</span>
       <span
-        *ngIf="DisplayOption.TRADITIONAL === pastVideoDisplayOption">"Inaudible video with traditional subtitles"</span>
-      <span *ngIf="DisplayOption.EMOTIONAL === pastVideoDisplayOption">"Inaudible video with emotional subtitles"</span>
+        *ngIf="DisplayOption.TRADITIONAL === pastVideoDisplayOption">"B - Inaudible video with traditional subtitles"</span>
+      <span *ngIf="DisplayOption.EMOTIONAL === pastVideoDisplayOption">"C - Inaudible video with enhanced subtitles"</span>
     </strong>.
   </p>
   <p [class.mb-0]="seq == 'b'"><strong>Please fill out the next page of the questionnaire now.</strong></p>
