@@ -348,7 +348,7 @@ export class VideoComponent implements OnInit {
 
   getColor(line: SubtitleLine) {
     if ((Emphasis.BLUR as Emphasis) === line.emphasis) {
-      return 'transparent';
+      return line.color ? line.color + '3f' : '#fffffff3f';
     }
     if (line.color) {
       return line.color;
@@ -364,6 +364,10 @@ export class VideoComponent implements OnInit {
   }
 
   getFontSize(line: SubtitleLine) {
+    return this.getTextSize(line) + 'vw';
+  }
+
+  getTextSize(line: SubtitleLine) {
     let size = 1.5;
 
     if (line.size && (Sizes.REGULAR as Sizes) !== line.size) {
@@ -386,7 +390,7 @@ export class VideoComponent implements OnInit {
       size *= 1.2;
     }
 
-    return size + 'vw';
+    return size;
   }
 
   getFontWeight(line: SubtitleLine) {
@@ -423,7 +427,7 @@ export class VideoComponent implements OnInit {
     if (line.emphasis) {
       if ((Emphasis.BLUR as Emphasis) === line.emphasis) {
         const color = line.color ? line.color : '#ffffff';
-        return '0 0 5px ' + color;
+        return '0 0 ' + this.getTextSize(line) / 6 + 'vw ' + color;
       }
     }
     return 'none';
