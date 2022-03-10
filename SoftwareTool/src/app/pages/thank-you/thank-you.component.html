@@ -5,12 +5,15 @@
       <span *ngIf="DisplayOption.AUDIBLE === pastVideoDisplayOption">"A - Audible video without subtitles"</span>
       <span
         *ngIf="DisplayOption.TRADITIONAL === pastVideoDisplayOption">"B - Inaudible video with traditional subtitles"</span>
-      <span *ngIf="DisplayOption.EMOTIONAL === pastVideoDisplayOption">"C - Inaudible video with enhanced subtitles"</span>
+      <span
+        *ngIf="DisplayOption.EMOTIONAL === pastVideoDisplayOption">"C - Inaudible video with enhanced subtitles"</span>
     </strong>.
   </p>
   <p [class.mb-0]="seq == 'b'"><strong>Please fill out the next page of the questionnaire now.</strong></p>
   <div *ngIf="seq == 'b'">
-    <a href="#" class="d-block">If you haven't started the questionnaire yet, it can be found here.</a>
+    <a
+      href="https://forms.office.com/Pages/ResponsePage.aspx?id=OTEyrjoJKk2Bpl0zS82QGcQF3HRgxZNFmCxkLOuWMrBUOVpFRTBXVVVEUjhKTkpaNVlGVEU0STU3MS4u"
+      class="d-block" target="_blank">If you haven't started the questionnaire yet, it can be found here.</a>
   </div>
 
   <button (click)="onNext()" *ngIf="seq != 'e'" type="button" class="btn btn-secondary ml-auto d-block">Next</button>

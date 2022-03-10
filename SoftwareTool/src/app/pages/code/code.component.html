@@ -5,7 +5,9 @@
   <p>You will be shown 3 video clips with different display methods. After each one you will be asked to answer some
     questions about them. Each video is about 3 minutes long. Please have the questionnaire open alongside this
     page.</p>
-  <a href="#">The questionnaire and consent form can be found here.</a>
+  <a target="_blank"
+     href="https://forms.office.com/Pages/ResponsePage.aspx?id=OTEyrjoJKk2Bpl0zS82QGcQF3HRgxZNFmCxkLOuWMrBUOVpFRTBXVVVEUjhKTkpaNVlGVEU0STU3MS4u">The
+    questionnaire and consent form can be found here.</a>
 
   <p class="mt-5">If you were given a code, please enter it below. The codes are not unique and cannot be linked to you.
     They are
@@ -19,6 +21,7 @@
   </div>
   <p *ngIf="invalidCode" class="error">Code is invalid</p>
 
-  <button (click)="onRandomClick()" class="btn btn-lg btn-outline-secondary mb-3" type="button">I don't have a code / give me any
+  <button (click)="onRandomClick()" class="btn btn-lg btn-outline-secondary mb-3" type="button">I don't have a code /
+    give me any
   </button>
 </div>
