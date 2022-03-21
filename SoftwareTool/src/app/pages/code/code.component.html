@@ -9,9 +9,7 @@
      href="https://forms.office.com/Pages/ResponsePage.aspx?id=OTEyrjoJKk2Bpl0zS82QGcQF3HRgxZNFmCxkLOuWMrBUOVpFRTBXVVVEUjhKTkpaNVlGVEU0STU3MS4u">The
     questionnaire and consent form can be found here.</a>
 
-  <p class="mt-5">If you were given a code, please enter it below. The codes are not unique and cannot be linked to you.
-    They are
-    used as a way to distribute variations more evenly.</p>
+  <p class="mt-5">Please enter the code given to you:</p>
   <div class="input-group input-group-lg mb-3">
     <input type="text" [(ngModel)]="code" (keyup.enter)="onCodeSubmit()" placeholder="Code" id="code" name="code"
            class="form-control">
@@ -20,8 +18,4 @@
     </div>
   </div>
   <p *ngIf="invalidCode" class="error">Code is invalid</p>
-
-  <button (click)="onRandomClick()" class="btn btn-lg btn-outline-secondary mb-3" type="button">I don't have a code /
-    give me any
-  </button>
 </div>
